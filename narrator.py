@@ -35,7 +35,8 @@ def play_audio(text):
     with open(file_path, "wb") as f:
         f.write(audio)
 
-    play(audio)
+    # play(audio)
+    play(audio,False, False)
 
 
 def generate_new_line(base64_image):

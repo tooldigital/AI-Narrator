@@ -43,3 +43,11 @@ In another terminal, run the narrator:
 python narrator.py
 ```
 
+make sure to install ffmpeg or sounddevice for the audio playback
+if having issues with ffmplay replace play(audio) with play(audio,False, False)
+
+```
+brew install ffmpeg
+or
+pip install sounddevice soundfile
+```

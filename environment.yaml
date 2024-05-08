@@ -1,0 +1,14 @@
+name: david
+channels:
+  - defaults
+  - conda-forge
+  - nvidia/label/cuda-12.1.0
+
+dependencies:
+  - python==3.10
+  - cuda-toolkit
+  - cudnn
+  - ffmpeg
+  - pip
+  - pip:
+      - -r requirements.txt

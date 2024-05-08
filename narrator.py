@@ -19,6 +19,7 @@ def check_for_adidas(image_path):
     while True:
         try:
             results = model(image_path, conf=0.3, imgsz=640, verbose=False)
+            results[0].save("./frames/result.jpg")
             if(len(results[0].boxes)>0):
                 return True
             else:
@@ -84,7 +85,7 @@ def analyze_image(base64_image, script, isadidas=False):
     if isadidas==True:
         systemrole = """
                 You are Sir David Attenborough. Narrate the picture of the human as if it is a nature documentary.
-                Make it snarky and funny. Make it short maximum two sentences. An Adidas logo has been detected. Elaborate on that. See if the item that has the logo on it is some piece of clothing. Make a big deal about it!
+                Make it snarky and funny. Make it realy short maximum two sentences, not too much words. An Adidas logo has been detected. Elaborate on that. See if the item that has the logo on it is some piece of clothing. Make a big deal about it!
                 """
 
     response = client.chat.completions.create(
@@ -113,7 +114,7 @@ def main():
 
         #check for signs of Adidas
         adidasfound = check_for_adidas(image_path)
-        print("ADIDAS FOUND "+str(adidasfound))
+        #print("ADIDAS FOUND "+str(adidasfound))
 
         # getting the base64 encoding
         base64_image = encode_image(image_path)
@@ -127,7 +128,7 @@ def main():
 
         play_audio(analysis)
 
-        script = script + [{"role": "assistant", "content": analysis}]
+        #script = script + [{"role": "assistant", "content": analysis}]
 
         #script =  [{"role": "assistant", "content": analysis}]
 

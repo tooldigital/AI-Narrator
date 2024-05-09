@@ -71,16 +71,33 @@ export const analyze_image = async (base64_image, isadidas = false) => {
   return response_text;
 };
 
+export const get_elevenlabs_audio = async (text) => {
+    const options = {
+        method: 'POST',
+        headers: {'xi-api-key': import.meta.env.VITE_ELEVENLABS_API_KEY, 'Content-Type': 'application/json'},
+        body: JSON.stringify({text:text})
+    };
+
+    try {
+        const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${import.meta.env.VITE_ELEVENLABS_VOICE_ID}`, options)
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        return url;
+    } catch (error) {
+        console.log("error getting audio from ElevenLabs",error);
+    }
+}
+
 export const play_audio = (text) => {
-  const audio = new Audio("data:audio/wav;base64," + text);
+  const audio = new Audio(text);
   audio.play();
 };
 
 //call on loop
-export const request_new_script = async (image) => {
+export const request_new_script = async (image, isBase64=false) => {
   // # path to your image
   let image_path = image;
-  let base64_image = await imageUrlToBase64(image_path);
+  let base64_image = isBase64?image : await imageUrlToBase64(image_path);
   // #check for signs of Adidas
   let adidasfound = check_for_adidas(image_path);
 

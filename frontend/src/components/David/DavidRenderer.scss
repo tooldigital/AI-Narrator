@@ -1,0 +1,17 @@
+.DavidRenderer{
+    .capture-L, .capture-R, .currentCapture{
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 200px;
+        width: auto;
+    }
+    .capture-R{
+        left: auto;
+        right: 0;
+    }
+    .currentCapture{
+        bottom: 0;
+        top: auto;
+    }
+}

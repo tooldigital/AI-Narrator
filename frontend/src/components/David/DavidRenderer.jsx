@@ -19,7 +19,9 @@ const DavidRenderer = () => {
         }
     }
     
-    const invokeGPTAnalysis = async () => {
+    const invokeGPTAnalysis =  async () => {
+        let newText = await request_new_script(imageTestRef.current.src);
+        setDialogAnimated(newText);
         //request_new_script("text", "image");
     }
 
@@ -38,9 +40,7 @@ const DavidRenderer = () => {
     return (<div className="DavidRenderer">
         <img ref={imageTestRef} src={david} alt="" />
         <h3>{dialogAnimated}</h3>
-        <button onClick={()=>{
-            request_new_script(imageTestRef.current.src);
-        }}>Analyze!</button>
+        <button onClick={invokeGPTAnalysis}>Analyze!</button>
     </div> );
 }
  

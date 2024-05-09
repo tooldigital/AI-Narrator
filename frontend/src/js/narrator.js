@@ -86,10 +86,10 @@ export const request_new_script = async (image) => {
 
   // # analyze posture
   console.log("👀 David is watching...");
-  const david_text = await analyze_image(base64_image, adidasfound);
+  const david_text = analyze_image(base64_image, adidasfound);
 
   console.log("🎙️ David says:");
-  console.log(david_text);
+  return david_text;
 
 //   play_audio(david_text);
   // # wait for 5 seconds

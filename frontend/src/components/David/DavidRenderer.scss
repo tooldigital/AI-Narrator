@@ -1,14 +1,68 @@
 .DavidRenderer{
-    .capture-L, .capture-R, .currentCapture{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    .david-container{
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 90vmin;
+        width: auto;
+        aspect-ratio: 1032/811.703;
+        // max-width: 1420px;
+        // min-width: 1000px;
+        img{
+            width: 100%;
+            height: auto;
+        }
+        .glare{
+            position: absolute;
+            z-index: 3;
+            left: 0;
+            top: 0;
+            width: 100%;
+            mix-blend-mode: screen;
+        }
+    }
+
+    .currentCapture{
         position: absolute;
         top: 0;
         left: 0;
         height: 200px;
         width: auto;
+       
+    }
+    .capture-L, .capture-R{
+        position: absolute;
+        border-radius: 100%;
+        // width: 8%;
+        // height: auto;
+        height: 10.1%;
+        transform: translate(-50%, -50%);
+        aspect-ratio: 1/1;
+        
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0.6;
+        video{
+            height: 100.1%;
+            width: auto;
+        }
+    }
+    .capture-L{
+        left: 41.7%;
+        top: 33%;
     }
     .capture-R{
         left: auto;
-        right: 0;
+        top: 32.6%;
+        right: 35.1%;
     }
     .currentCapture{
         bottom: 0;

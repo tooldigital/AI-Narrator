@@ -1,5 +1,6 @@
 import './DavidRenderer.scss';
-import david from 'assets/images/david.jpg';
+import david from 'assets/images/david-front.png';
+import davidGlare from 'assets/images/david-glass-glare.png';
 import { useEffect, useRef, useState } from 'react';
 import {get_elevenlabs_audio, play_audio, request_new_script} from 'src/js/narrator';
 const DavidRenderer = () => {
@@ -124,14 +125,23 @@ const DavidRenderer = () => {
     //todo add an interval to animate the dialog
 
     return (<div className="DavidRenderer">
-        <img ref={imageTestRef} src={david} alt="" />
-        <video className='capture-L' ref={videoLeftRef} alt="" />
-        <video className='capture-R' ref={videoRightRef} alt="" />
         { screenShot && <img ref={screenshotRef} className='currentCapture' src={screenShot} alt="" />}
-        <h3>{dialogAnimated}</h3>
+        <div className='david-container'>
+            <img ref={imageTestRef} src={david} alt="" />
+            <div className='capture-L'>
+                <video ref={videoLeftRef} alt="" />
+            </div>
+            <div className='capture-R' >
+                <video ref={videoRightRef} alt="" />
+            </div>
+            <img className='glare' src={davidGlare} alt="" />
+        </div>
+       <div className='controls'>
+       <h3>{dialogAnimated}</h3>
         <button onClick={()=>{
             toogleLoop();
         }}>{isLooking?"Stop Observing":"Start Looking"}</button>
+       </div>
     </div> );
 }
  

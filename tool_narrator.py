@@ -29,7 +29,7 @@ system_role_intermediate = """
 
 
 async def generate_intermediate_random():
-
+    print("START GENERATION")
     response = await asyncClient.chat.completions.create(
         model="gpt-4",
         messages=[
@@ -38,7 +38,7 @@ async def generate_intermediate_random():
                 "content": system_role_intermediate,
             },
         ]+
-        [{"role": "user", "content": "tell me a fun fact about nature and wildlife, do no start with Ah, start with something like did you know, use maximum 20 words"}],
+        [{"role": "user", "content": "tell me a fun fact about nature and wildlife, do no start with Ah, start with something like:'did you know', use maximum 20 words"}],
         max_tokens=300,
         temperature=1.2
         )
@@ -46,20 +46,38 @@ async def generate_intermediate_random():
     response_text = response.choices[0].message.content
     return response_text
 
-#test = asyncio.run(generate_intermediate_random())
+
+def callbackRegular(result):
+    print(result.result())
+
+def callbackIntermediate(result):
+    print(result.result())
 
 
-async def task():
-    await asyncio.sleep(3)
-    return 1+1
+latestresult = ''
+latestintermediate = ''
+
+areweinregular = True
+arewewaiting = False
 
 async def main():
-    print(event_loop.create_task(task()))
-    print("main completed")
+    global areweinregular
+    global arewewaiting
+    while True:
+        print("PLIPLOE")
+        if areweinregular:
+            if arewewaiting==False:
+                print("start regular")
+                event_loop.create_task(generate_intermediate_random()).add_done_callback(callbackIntermediate)
+                arewewaiting = True
+            else:
+                print("waiting for regular")
+
+        time.sleep(5)
+    
+    #event_loop.create_task(generate_intermediate_random()).add_done_callback(callback)
 
 
 event_loop = asyncio.get_event_loop()
 event_loop.run_until_complete(main())
 event_loop.run_forever()
-
-

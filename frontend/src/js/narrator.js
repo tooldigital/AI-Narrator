@@ -32,7 +32,9 @@ export const chatGPT_describe_image_template = (base64_image) => {
         { type: "text", text: "Describe this image" },
         {
           type: "image_url",
-          image_url: `${base64_image}`,
+          image_url: {
+            "url":`${base64_image}`
+          },
         },
       ],
     },
@@ -53,7 +55,7 @@ export const analyze_image = async (base64_image, isadidas = false) => {
 
   // let response = client.chat.completions.create(
   const response = await client.chat.completions.create({
-    model: "gpt-4-vision-preview",
+    model: "gpt-4o",
     messages: [
       {
         role: "system",

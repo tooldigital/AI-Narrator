@@ -89,7 +89,7 @@ def analyze_image(base64_image, script, isadidas=False):
                 """
 
     response = client.chat.completions.create(
-        model="gpt-4-vision-preview",
+        model="gpt-4o",
         messages=[
             {
                 "role": "system",

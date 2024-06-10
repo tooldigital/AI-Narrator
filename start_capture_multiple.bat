@@ -1,0 +1,1 @@
+conda activate david && python capture_multiple_images.py

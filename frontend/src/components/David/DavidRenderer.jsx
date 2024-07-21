@@ -4,7 +4,8 @@ import davidGlare from 'assets/images/david-glass-glare.png';
 import { useEffect, useRef, useState } from 'react';
 import { get_elevenlabs_audio, play_audio, request_new_script } from 'src/js/narrator';
 import astroBg from 'assets/images/astro-bg-small.png';
-import astroGlass from 'assets/images/astro-top-small.png';
+// import astroGlass from 'assets/images/astro-top-small.png';
+import astroGlass from 'assets/images/astro-top-v2-small.png';
 
 const pregenTiming = 3;
 const DavidRenderer = () => {
@@ -68,11 +69,16 @@ const DavidRenderer = () => {
 
     const generateAudioScript = async () => {
         let newText = await request_new_script(screenShot, true);
-        setDialogAnimated(newText);
-        console.log(newText);
-        let _audioSrc = await get_elevenlabs_audio(newText)
-        // setAudioSrc(_audioSrc);
-        return _audioSrc;
+        if(!isFirstTime.current){
+            setDialogAnimated(newText);
+            console.log(newText);
+            let _audioSrc = await get_elevenlabs_audio(newText)
+            // setAudioSrc(_audioSrc);
+            return _audioSrc;
+        }else{
+            canGenerateAudio.current = true
+            return null;
+        }
     }
 
     const invokeGPTAnalysis = async () => {
@@ -92,6 +98,7 @@ const DavidRenderer = () => {
 
                 audio.current.ontimeupdate = async (event) => {
                     if (canGenerateAudio.current) {
+                        if(! audio.current ) return;
                         if (audio.current.duration - audio.current.currentTime < pregenTiming) {
                             console.log("===generaring new script===");
                             canGenerateAudio.current = false;
@@ -145,7 +152,10 @@ const DavidRenderer = () => {
     }
     useEffect(() => {
         if (!isLooking) {
+            canGenerateAudio.current = true;
             isFirstTime.current = true
+            setDialogAnimated("...");
+
         }
     }, [isLooking]);
 
@@ -164,7 +174,6 @@ const DavidRenderer = () => {
                 audio.current.src = audioSrc;
                 audio.current.play();
                 canGenerateAudio.current = true;
-                setDialogAnimated("...");
                 // console.log("//--------success--------//");
 
             } else {
@@ -200,10 +209,10 @@ const DavidRenderer = () => {
     return (<div className="DavidRenderer">
         {screenShot && <img ref={screenshotRef} className='currentCapture' src={screenShot} alt="" />}
         <img className='astro-bg' src={astroBg} alt="" />
+        <img className='astro-top' src={astroGlass} alt="" />
         <div className='capture-L'>
             <video ref={videoLeftRef} alt="" />
         </div>
-        <img className='astro-top' src={astroGlass} alt="" />
         <div className='controls'>
             <h3>{dialogAnimated}</h3>
             <button onClick={() => {

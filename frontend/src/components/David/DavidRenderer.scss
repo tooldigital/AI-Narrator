@@ -31,7 +31,7 @@
 
     }
     .astro-top{
-        mix-blend-mode: screen;
+        // mix-blend-mode: screen;
         
     }
 
@@ -92,8 +92,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        opacity: 0.4;
-
+        opacity: 0.2;
+        mix-blend-mode: screen;
         video{
             height: 100.1%;
             width: auto;

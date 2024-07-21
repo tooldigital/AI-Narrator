@@ -2,13 +2,15 @@ import './DavidRenderer.scss';
 import david from 'assets/images/david-front.png';
 import davidGlare from 'assets/images/david-glass-glare.png';
 import { useEffect, useRef, useState } from 'react';
-import {get_elevenlabs_audio, play_audio, request_new_script} from 'src/js/narrator';
+import { get_elevenlabs_audio, play_audio, request_new_script } from 'src/js/narrator';
+import astroBg from 'assets/images/astro-bg-small.png';
+import astroGlass from 'assets/images/astro-top-small.png';
 
 const pregenTiming = 3;
 const DavidRenderer = () => {
 
-    const [dialog, setDialog] = useState("Hi I am david");
-    const [dialogAnimated, setDialogAnimated] = useState("Hi I am david");
+    const [dialog, setDialog] = useState("...");
+    const [dialogAnimated, setDialogAnimated] = useState("...");
     const [screenShot, setScreenShot] = useState(null);
     const [startedLooking, setStartedLooking] = useState(false);
     const [isLooking, setIsLooking] = useState(false);
@@ -17,46 +19,38 @@ const DavidRenderer = () => {
     const [canPlayAudio, setCanPlayAudio] = useState(false);
     const [newScriptReady, setNewScriptReady] = useState(false);
     const intervalRef = useRef(null);
-    const imageTestRef = useRef(null);
     const screenshotRef = useRef(null);
     const videoLeftRef = useRef(null);
-    const videoRightRef = useRef(null);
 
     const audio = useRef(null);
     const nextAudioSrc = useRef(null);
     const canGenerateAudio = useRef(true);
-    
+
     const isFirstTime = useRef(true);
 
-    const renderDialog = () =>{
+    const renderDialog = () => {
         let newSubString = dialog.substring(0, index + 1);
         setDialogAnimated(newSubString);
     }
     const animateDialog = () => {
-        if(index < dialog.length){
+        if (index < dialog.length) {
             setIndex(index + 1);
             renderDialog();
         }
     }
 
     const startupCamera = () => {
-        navigator.mediaDevices.getUserMedia({video: true})
-        .then((stream) => {
-            let videoR = videoLeftRef.current
-            videoR.srcObject = stream;
-            videoR.onloadedmetadata = (e) => {
-                videoR.play();
-            }
-
-            let videoL = videoRightRef.current
-            videoL.srcObject = stream;
-            videoL.onloadedmetadata = (e) => {
-                videoL.play();
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                let videoR = videoLeftRef.current
+                videoR.srcObject = stream;
+                videoR.onloadedmetadata = (e) => {
+                    videoR.play();
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     const captureFrameFromVideoStream = () => {
@@ -76,34 +70,34 @@ const DavidRenderer = () => {
         let newText = await request_new_script(screenShot, true);
         setDialogAnimated(newText);
         console.log(newText);
-        let  _audioSrc= await get_elevenlabs_audio(newText)
+        let _audioSrc = await get_elevenlabs_audio(newText)
         // setAudioSrc(_audioSrc);
         return _audioSrc;
     }
-    
-    const invokeGPTAnalysis =  async () => {
+
+    const invokeGPTAnalysis = async () => {
         // console.log(screenShot);
-        if(screenShot){
-            if(audio.current){
+        if (screenShot) {
+            if (audio.current) {
                 console.log(audio.current.ended, audio.current.paused);
-                if(!audio.current.ended || !audio.current.paused){
+                if (!audio.current.ended || !audio.current.paused) {
                     return;
                 }
             }
-            
-            if(!audio.current){
-                nextAudioSrc.current =  await generateAudioScript();
+            console.log(audio.current);
+            if (!audio.current) {
+                nextAudioSrc.current = await generateAudioScript();
                 // console.log("currentAudioSrc", nextAudioSrc.current);
                 audio.current = new Audio(nextAudioSrc.current);
-                
+
                 audio.current.ontimeupdate = async (event) => {
-                    if(canGenerateAudio.current){
-                        if(audio.current.duration - audio.current.currentTime < pregenTiming){
+                    if (canGenerateAudio.current) {
+                        if (audio.current.duration - audio.current.currentTime < pregenTiming) {
                             console.log("===generaring new script===");
                             canGenerateAudio.current = false;
                             setCanPlayAudio(false);
                             setNewScriptReady(false);
-                            nextAudioSrc.current =  await generateAudioScript();
+                            nextAudioSrc.current = await generateAudioScript();
                             setNewScriptReady(true);
 
                             // setAudioSrc(_audioSrc);
@@ -116,64 +110,73 @@ const DavidRenderer = () => {
                     }
                 };
                 audio.current.onended = (event) => {
-                    // console.log("audio ended");
                     setCanPlayAudio(true);
+                    if( isFirstTime.current){
+                        audio.current = null
+                    }
+                    console.log("audio ended", audio.current);
                     // setStartedLooking(false);
                 };
-                audio.current.play(); 
-            }else{
+                audio.current.play();
+            } else {
                 audio.current.pause();
                 audio.current.src = nextAudioSrc.current;
-                audio.current.play(); 
-            }      
+                audio.current.play();
+            }
             // console.log(audio);
         }
     }
 
     const toogleLoop = () => {
-        if(!intervalRef.current){
+        console.log(intervalRef.current);
+        if (!intervalRef.current) {
             setIsLooking(true);
             captureFrameFromVideoStream();
             intervalRef.current = setInterval(captureFrameFromVideoStream, 4000);
-        }else{
+        } else {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
             setIsLooking(false);
+            audio.current.pause();
+            audio.current = null;
+            setCanPlayAudio(true);
+            setNewScriptReady(false);
         }
     }
     useEffect(() => {
-        if(!isLooking){
+        if (!isLooking) {
             isFirstTime.current = true
         }
     }, [isLooking]);
 
     useEffect(() => {
-        if(newScriptReady){
+        if (newScriptReady) {
             setAudioSrc(nextAudioSrc.current)
         }
     }, [newScriptReady]);
 
     useEffect(() => {
-        
-        if(isLooking){
+
+        if (isLooking) {
             // console.log("//--------audio update--------//");
             // console.log("condition check:", canPlayAudio, newScriptReady);
-            if(canPlayAudio && newScriptReady){
+            if (canPlayAudio && newScriptReady) {
                 audio.current.src = audioSrc;
-                audio.current.play(); 
+                audio.current.play();
                 canGenerateAudio.current = true;
+                setDialogAnimated("...");
                 // console.log("//--------success--------//");
 
-            }else{
+            } else {
                 // console.log("//--------Fail--------//");
 
             }
         }
-    }, [canPlayAudio,audioSrc]);
+    }, [canPlayAudio, audioSrc]);
 
     useEffect(() => {
-        if(screenShot){
-            if(isFirstTime.current){
+        if (screenShot) {
+            if (isFirstTime.current) {
                 isFirstTime.current = false;
                 invokeGPTAnalysis();
             }
@@ -195,24 +198,21 @@ const DavidRenderer = () => {
     //todo add an interval to animate the dialog
 
     return (<div className="DavidRenderer">
-        { screenShot && <img ref={screenshotRef} className='currentCapture' src={screenShot} alt="" />}
-        <div className='david-container'>
-            <img ref={imageTestRef} src={david} alt="" />
-            <div className='capture-L'>
-                <video ref={videoLeftRef} alt="" />
-            </div>
-            <div className='capture-R' >
-                <video ref={videoRightRef} alt="" />
-            </div>
-            <img className='glare' src={davidGlare} alt="" />
+        {screenShot && <img ref={screenshotRef} className='currentCapture' src={screenShot} alt="" />}
+        <img className='astro-bg' src={astroBg} alt="" />
+        <div className='capture-L'>
+            <video ref={videoLeftRef} alt="" />
         </div>
-       <div className='controls'>
-       <h3>{dialogAnimated}</h3>
-        <button onClick={()=>{
-            toogleLoop();
-        }}>{isLooking?"Stop Observing":"Start Looking"}</button>
-       </div>
-    </div> );
+        <img className='astro-top' src={astroGlass} alt="" />
+        <div className='controls'>
+            <h3>{dialogAnimated}</h3>
+            <button onClick={() => {
+                toogleLoop();
+            }}>{isLooking ? "Stop" : "Tell me my fortune"}</button>
+        </div>
+        <div className='shadow'>
+        </div>
+    </div>);
 }
- 
+
 export default DavidRenderer;

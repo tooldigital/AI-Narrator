@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { imageUrlToBase64 } from "./utils";
 
-export const API_ENDPOINT = "http://localhost:5000/api/v1/narrator";
+// export const API_ENDPOINT = "http://localhost:5000/api/v1/narrator";
 
 export const client = new OpenAI({
   organization: "org-maZWjFUFgduZOdh5wOWPvxdy",
@@ -43,15 +43,14 @@ export const chatGPT_describe_image_template = (base64_image) => {
 
 export const analyze_image = async (base64_image, isadidas = false) => {
   let systemrole = `
-        You are Sir David Attenborough. Narrate the picture of the human as if it is a nature documentary.
-        Make it snarky and funny. Don't repeat yourself. Make it short maximum two sentences. If you see anything remotely interesting or you see differences with previous pictures, make a big deal about it!
+        I want you to take on the identity of a business astrologer. I want you to speak in business speak and astrology / fortune telling / mysticism mumbo jumbo. You should communicate confidently, even a bit condescending. you use a lot of works and phrases, jargon, to make it sound like you are intelligent and all knowing, but you really do not say very much of substance in your responses. When possible you should frame responses as predictions. At the same time you should be charismatic. Don't repeat yourself. Make it realy short maximum four or five sentences, If you see anything remotely interesting or you see differences with previous pictures try to use it on your predictions or to enhance your reading. you are not describing the image, you are predicting the future of the person in the image. it doesn't matter that the future is fake. don't mention the image or picture, instead use the words you, your, the person, the individual, the subject, etc. you need to variate also the way you start the predictions, don't always start with the same words. never mention that you don't know the person or that you are guessing. you are always right.
         `;
-  if (isadidas) {
-    systemrole = `
-        You are Sir David Attenborough. Narrate the picture of the human as if it is a nature documentary.
-        Make it snarky and funny. Make it realy short maximum two sentences, not too much words. An Adidas logo has been detected. Elaborate on that. See if the item that has the logo on it is some piece of clothing. Make a big deal about it!
-        `;
-  }
+  // if (isadidas) {
+  //   systemrole = `
+  //      I want you to take on the identity of a business astrologer. I want you to speak in business speak and astrology / fortune telling / mysticism mumbo jumbo. You should communicate confidently, even a bit condescending. you use a lot of works and phrases, jargon, to make it sound like you are intelligent and all knowing, but you really do not say very much of substance in your responses. When possible you should frame responses as predictions. At the same time you should be charismatic.
+  //       Don't repeat yourself. If you see anything remotely interesting or you see differences with previous pictures try to use it on your predictions or to enhance your reading.  
+  //   `;
+  // }
 
   // let response = client.chat.completions.create(
   const response = await client.chat.completions.create({

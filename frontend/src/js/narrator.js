@@ -103,10 +103,10 @@ export const request_new_script = async (image, isBase64=false) => {
   let adidasfound = check_for_adidas(image_path);
 
   // # analyze posture
-  console.log("👀 David is watching...");
+  console.log("👀 AI is watching...");
   const david_text = analyze_image(base64_image, adidasfound);
 
-  console.log("🎙️ David says:");
+  console.log("🎙️ AI says:");
   return david_text;
 
 //   play_audio(david_text);
